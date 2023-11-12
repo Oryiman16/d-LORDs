@@ -1,3 +1,208 @@
-Querries
+Querry
 
-From me
+Civil Service Database
+
+CREATE database Civil_Service_Staff
+
+USE Civil_Service_Staff
+
+CREATE table Personal_Details (
+First_Name varchar (50) not null,
+Middle_Name varchar (50) default null,
+Last_name varchar  (50) not null,
+DOB date not null,
+Sex char (2) not null,
+email varchar (30) Primary Key not null,
+Contact_Number bigint unique,
+Home_Address text not null,
+Country_of_Origin varchar (20) not null,
+State_of_Origin varchar (20) not null,
+LGA_of_Origin varchar (20) not null,
+Tribe varchar (20) default null,
+Qualification varchar (50) not null,
+Bank_Account_Number bigint unique
+);
+
+CREATE table Employment_Details (
+PSN int primary key,
+email varchar (30),
+Employment_position varchar (50) not null,
+`Starting_GL/Step` decimal (3,1) not null,
+Date_of_first_employment date not null,
+Date_of_Accepting_Appointment datetime not null,
+Date_of_confirmation date default null,
+Date_of_first_promotion date default null,
+Date_of_last_promotion date default null,
+Primary_Department varchar (100) not null,
+current_department varchar (100) not null,
+Secondary_department varchar (100) default null,
+Educational_Qualification varchar (50) not null,
+salary real,
+Document blob,
+Foreign key (email) References Personal_Details (email)  
+);
+
+CREATE table supervisory_head(
+PSN int,
+Supervisor_HOD varchar (20) not null,
+`Supervisor_HOD_GL/step` Decimal (3,1) not null,
+supervisory_MDA varchar (100) not null,
+foreign key (PSN) References Employment_Details (PSN)
+ );
+ 
+ CREATE table Posting_Records(
+ email varchar (30) not null,
+ Date_of_first_posting date not null,
+ date_of_current_posting date default null,
+ Total_number_of_postings date not null,
+ MDA_posted varchar (100) not null ,
+ Posting_authority varchar (100) not null ,
+ Foreign key (email) References Personal_Details (email)
+ );
+ 
+ CREATE table Promotion_History(
+PSN int,
+`starting_GL/Step` decimal (3.1) not null,
+`current_GL/Step` decimal (3.1) default null,
+Number_of_promotions tinyint not null,
+Number_of_missed_promotions tinyint default null,
+Date_of_first_promotion date default null,
+date_of_last_promotion date default null,
+reason_for_missed_promotion text default null,
+account_number bigint,
+foreign key (PSN) References Employment_Details (PSN)
+);
+
+CREATE table Educational_Qualifications(
+email varchar (30),
+Contact_number bigint not null,
+Primary_cert set ('yes', 'no') default null,
+Secondary_cert set ('yes', 'no') default null,
+Tertiary_cert set ('NCE', 'ND', 'DIP', 'ADIP', 'DEG') default null,
+Professional_qualification varchar (100) default null,
+`others` varchar (100) default null,
+Foreign key (email) References Personal_Details (email)
+);
+
+CREATE table Promotion_Dates(
+PSN int,
+date_of_first_promotion date,
+date_of_second_promotion date default null,
+date_of_third_promotion date default null,
+date_of_fourth_promotion date default null,
+date_of_fifth_promotion date default null,
+date_of_sixth_promotion date default null,
+date_of_seventh_promotion date default null,
+date_of_eight_promotion date default null,
+foreign key (PSN) References Employment_Details (PSN) on delete cascade
+);
+ 
+ 
+ CREATE table Posting_Dates(
+ PSN int,
+ date_of_first_posting date not null,
+ date_of_second_posting date default null,
+ date_of_third_posting date default null,
+ date_of_fourth_posting date default null,
+ date_of_fifth_posting date default null,
+ date_of_sixth_posting date default null,
+ date_of_seventh_posting date default null,
+ date_of_eight_posting date default null,
+ date_of_ninth_posting date default null,
+ date_of_tenth_posting date   default null,
+ foreign key (PSN) References Employment_Details (PSN)
+ );
+ 
+ CREATE table Posting_location(
+ PSN int,
+ first_posting_location varchar (150) not null,
+ second_posting_location varchar (150) default null,
+ third_posting_location varchar (150) default null,
+ fourth_posting_location varchar (150) default null,
+ fifth_posting_location varchar (150) default null,
+ sixth_posting_location varchar (150) default null,
+ seventh_posting_location varchar (150) default null,
+ eight_posting_location varchar (150 ) default null,
+ ninth_posting_location varchar (150) default null,
+ tenth_posting_location varchar (150) default null,
+ foreign key (PSN) References Employment_Details (PSN) on delete cascade
+ );
+ 
+ CREATE table Emergency_Contact(
+ PSN int,
+ First_Name varchar (20) not null,
+ Middle_name varchar (20) default null,
+ Last_name varchar (20) not null,
+ NOK_Phone_Number bigint  primary key not null,
+ Relationship varchar (20) not null,
+ NOK_Address text not null,
+ foreign key (PSN) References Employment_Details (PSN)
+);
+
+CREATE table `Query`(
+PSN int,
+Date_of_first_query date default null,
+Date_of_second_query date default null,
+Date_of_third_query date default null,
+Date_of_fourth_query date default null,
+Date_of_fifth_query date default null,
+foreign key (PSN) References Employment_Details (PSN) on delete cascade
+);
+
+CREATE table Discipline(
+Phone_number bigint primary key,
+PSN int,
+Date_of_first_discipline date default null,
+Date_of_second_discipline date default null,
+Date_of_third_discipline date default null,
+Date_of_fourth_discipline date default null,
+Date_of_fifth_discipline date default null,
+foreign key (PSN) References Employment_Details (PSN) on delete cascade
+);
+
+CREATE table Award(
+Phone_number bigint,
+PSN int,
+contact_number bigint,
+Date_of_first_Award date default null,
+Date_of_second_award date default null,
+Date_of_third_Award date default null,
+Date_of_fourth_Award date default null,
+Date_of_fifth_Award date default null,
+Foreign key (phone_number) References Discipline (phone_number),
+foreign key (PSN) References Employment_Details (PSN) on delete cascade
+);
+
+CREATE table Commendation(
+Phone_number bigint,
+email varchar (30),
+contact_number bigint,
+Date_of_first_Commendation date default null,
+Date_of_second_Commendation date default null,
+Date_of_third_Commendation date default null,
+Date_of_fourth_commendation date default null,
+Date_of_fifth_commendation date default null,
+Foreign key (phone_number) References Discipline (phone_number),
+foreign key (email) references personal_details (email)
+);
+
+CREATE table MDA(
+PSN int,
+MDA set ('Agric', 'Health', 'Commerce', 'Finance', 'Justice', 'Sport', 'Housing', 'Enviroment', 'Works',
+ 'Disaster_Mgt', 'Special duties', 'Women_Affairs', 'SSG', 'COS','PlanComm','TSB', 'SUBEB', 'BENSECA', 'BENSSESA', 'HMB', 'BNARDA', 'ScholarshipBoard',
+'ExamsBoard') primary key,
+foreign key (PSN) references Employment_Details  (PSN)
+);
+
+CREATE table Supervisory_Head(
+PSN int,
+Supervisory_Head set ('Admin', 'livestock', 'veterinary', 'public_health', 'finance', 'accounts', 'Procurement',
+'AgricServices', 'DPR', 'establishment', 'Permanent_Secretary','H0S','COS','CJ', 'SSG','ES', 'Chiarperson','AG',
+'AuG', 'SurveyGen') primary key,
+ foreign key (PSN) references Employment_Details  (PSN)
+);
+
+
+
+
+
